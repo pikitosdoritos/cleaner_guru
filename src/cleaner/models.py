@@ -1,0 +1,10 @@
+from dataclasses import dataclass
+from typing import Optional
+
+@dataclass
+class Photo:
+    path: str
+    size_bytes: int
+    width: Optional[int]
+    height: Optional[int]
+    sha256: Optional[int] = None
