@@ -1,0 +1,11 @@
+[
+  {
+    "type": "exact_duplicates",
+    "keep": "E:\\projects\\cleaner_guru\\photos\\IMG_8429 copy 2.JPG",
+    "suggest_delete": [
+      "E:\\projects\\cleaner_guru\\photos\\IMG_8429 copy.JPG",
+      "E:\\projects\\cleaner_guru\\photos\\IMG_8429.JPG"
+    ],
+    "count": 3
+  }
+]
