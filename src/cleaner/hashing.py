@@ -4,7 +4,6 @@ from pathlib import Path
 # Створюємо функцію для обчислення хеша. Файл читається частинами, щоб не вантажити памʼять.
 def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
     hasher = hashlib.sha256()
-
     # Зчитуємо файли частинами 
     with path.open("rb") as f:
         # Проходимо по всіх  частинами

@@ -7,4 +7,5 @@ class Photo:
     size_bytes: int
     width: Optional[int]
     height: Optional[int]
-    sha256: Optional[int] = None
+    sha256: Optional[str] = None
+    phash: Optional[str] = None
