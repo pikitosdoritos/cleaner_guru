@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
+from datetime import datetime
 
 @dataclass
 class Photo:
@@ -9,3 +10,4 @@ class Photo:
     height: Optional[int]
     sha256: Optional[str] = None
     phash: Optional[str] = None
+    timestamp: Optional[datetime] = None

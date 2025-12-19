@@ -1,12 +1,31 @@
 from pathlib import Path
+from typing import Optional
 from typing import Iterable
 from PIL import Image
+from datetime import datetime
 from .models import Photo
 from .hashing import sha256_file
 from .phash import compute_phash
 
 # Список підтримуваних розширень
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"}
+# Функція для витягування дати та часу з EXIF
+def extract_timestamp(path: Path) -> Optional[datetime]:
+    try:
+        with Image.open(path) as img:
+            exif = img._getexif()
+
+            if not exif:
+                return None
+
+            dt = exif.get(36867)
+
+            if not dt:
+                return None
+
+            return datetime.strptime(dt, "%Y:%m:%d %H:%M:%S")
+    except Exception:
+        return None
 
 def scan_photos(folder: Path) -> Iterable[Photo]:
     # Generator - буде повертати фото по одному
@@ -19,6 +38,11 @@ def scan_photos(folder: Path) -> Iterable[Photo]:
             continue
         # Дістаємо вагу файлу
         size_bytes = path.stat().st_size
+
+        timestamp = extract_timestamp(path)
+
+        if timestamp is None:
+            timestamp = datetime.fromtimestamp(path.stat().st_mtime)
         # Дістаємо розміри (одразу захищаємося від помилок)
         try:
             with Image.open(path) as img:
@@ -42,7 +66,8 @@ def scan_photos(folder: Path) -> Iterable[Photo]:
             width = width,
             height = height,
             sha256 = sha256,
-            phash = phash
+            phash = phash,
+            timestamp = timestamp
         )
         
         

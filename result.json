@@ -1,19 +1,49 @@
 [
   {
     "type": "exact_duplicates",
-    "keep": "E:\\projects\\cleaner_guru\\photos\\IMG_8429 copy 2.JPG",
+    "keep": "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19 – копія (2).jpg",
     "suggest_delete": [
-      "E:\\projects\\cleaner_guru\\photos\\IMG_8429 copy.JPG",
-      "E:\\projects\\cleaner_guru\\photos\\IMG_8429.JPG"
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19 – копія (3).jpg",
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19 – копія.jpg",
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19.jpg"
+    ],
+    "count": 4
+  },
+  {
+    "type": "similar_photos",
+    "keep": "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19 – копія.jpg",
+    "suggest_delete": [
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19.jpg"
+    ],
+    "count": 2
+  },
+  {
+    "type": "burst_photos",
+    "keep": "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-03.jpg",
+    "suggest_delete": [
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-01.jpg",
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-00.jpg"
     ],
     "count": 3
   },
   {
-    "type": "similar_photos",
-    "keep": "E:\\projects\\cleaner_guru\\photos\\photo_2024-06-15_00-50-54.jpg",
+    "type": "burst_photos",
+    "keep": "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-15.jpg",
     "suggest_delete": [
-      "E:\\projects\\cleaner_guru\\photos\\photo_2024-06-15_00-50-54.jpg"
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-14.jpg",
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-11.jpg",
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-12.jpg"
     ],
-    "count": 2
+    "count": 4
+  },
+  {
+    "type": "burst_photos",
+    "keep": "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19 – копія (2).jpg",
+    "suggest_delete": [
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19 – копія (3).jpg",
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19 – копія.jpg",
+      "E:\\projects\\cleaner_guru\\photos\\photo_2025-12-20_00-52-19.jpg"
+    ],
+    "count": 4
   }
 ]
