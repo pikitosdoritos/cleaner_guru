@@ -24,16 +24,16 @@ def find_similar_photos(photos: List[Photo]):
             # Пропускаємо ті, які вже були використані або не мають phash
             if p2.path in used or not p2.phash:
                 continue
-        # Перетворення pHash зі строки в обʼєкт
-        h2 = imagehash.hex_to_hash(p2.phash)
-        # Обчислюємо відстань між фотографіями за phash (покаже різницю між фотографіями)
-        distance = h1 - h2   
-        # Перевірка чи відстань між фотографіями менша за поріг
-        if distance <= PHASH_THRESHOLD:
-            group.append(p2)
-            used.add(p2.path)
+            # Перетворення pHash зі строки в обʼєкт
+            h2 = imagehash.hex_to_hash(p2.phash)
+            # Обчислюємо відстань між фотографіями за phash (покаже різницю між фотографіями)
+            distance = h1 - h2   
+            # Перевірка чи відстань між фотографіями менша за поріг
+            if distance <= PHASH_THRESHOLD:
+                group.append(p2)
+                used.add(p2.path)
 
-    if len(group) > 1:
-        groups.append(group)
+        if len(group) > 1:
+            groups.append(group)
 
     return groups

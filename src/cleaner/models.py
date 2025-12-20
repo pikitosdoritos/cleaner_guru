@@ -3,7 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 @dataclass
-class Photo:
+class Photo():
     path: str
     size_bytes: int
     width: Optional[int]

@@ -26,7 +26,7 @@ def extract_timestamp(path: Path) -> Optional[datetime]:
             return datetime.strptime(dt, "%Y:%m:%d %H:%M:%S")
     except Exception:
         return None
-
+# Скануємо фото
 def scan_photos(folder: Path) -> Iterable[Photo]:
     # Generator - буде повертати фото по одному
     for path in folder.rglob("*"):
