@@ -6,6 +6,7 @@ from datetime import datetime
 from .models import Photo
 from .hashing import sha256_file
 from .phash import compute_phash
+from .quality import blur_score
 
 # Список підтримуваних розширень
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"}
@@ -59,6 +60,11 @@ def scan_photos(folder: Path) -> Iterable[Photo]:
             phash = str(compute_phash(path))
         except Exception:
             phash = None
+        #  Дістаємо blur (одразу захищаємося від помилок)
+        try:
+            blur = blur_score(path)
+        except Exception:
+            blur = None
         #  Повертаємо результати, але по одному (щоб не вантажити пам'ять)
         yield Photo(
             path = str(path),
@@ -67,7 +73,8 @@ def scan_photos(folder: Path) -> Iterable[Photo]:
             height = height,
             sha256 = sha256,
             phash = phash,
-            timestamp = timestamp
+            timestamp = timestamp,
+            blur = blur
         )
         
         

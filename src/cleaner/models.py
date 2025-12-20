@@ -11,3 +11,4 @@ class Photo():
     sha256: Optional[str] = None
     phash: Optional[str] = None
     timestamp: Optional[datetime] = None
+    blur: Optional[float] = None
