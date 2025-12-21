@@ -9,6 +9,7 @@ from cleaner.quality import find_blurry_photos
 from cleaner.large import find_large_photos
 from cleaner.dark import find_dark_photos
 from cleaner.screenshots import find_screenshots
+from cleaner.ranking import rank_photos
 
 def main():
     # Знаходимо дирикторію з фотографіями і робимо її шлях абсолютним
@@ -55,42 +56,42 @@ def main():
     # Проходимо по всіх групах
     for dup_group in duplicate_groups:
         # Сортуємо групу за розміром
-        sorted_group = sorted(dup_group, key = lambda p: p.size_bytes, reverse = True)
+        ranked = rank_photos(dup_group)
         # Залишаємо найбільшу по розміру фотографію
-        keep = sorted_group[0].path
+        keep = ranked[0].path
         # Видаляємо всі крім першої
-        delete = [p.path for p in sorted_group[1:]]
-
+        delete = [p.path for p in ranked[1:]]
+        
         result.append({
             "type": "exact_duplicates",
             "keep": keep,
             "suggest_delete": delete,
-            "count": len(sorted_group)
+            "count": len(ranked)
         })
 
 
     for sim_group in similar_groups:
-        sorted_group = sorted(sim_group, key = lambda f: f.size_bytes, reverse = True)
-        keep = sorted_group[0].path
-        delete = [p.path for p in sorted_group[1:]]
+        ranked = rank_photos(sim_group)
+        keep = ranked[0].path
+        delete = [p.path for p in ranked[1:]]
 
         result.append({
     "type": "similar_photos",
     "keep": keep,
     "suggest_delete": delete,
-    "count": len(sorted_group)
+    "count": len(ranked)
     })
         
     for burst in burst_groups:
-        sorted_group = sorted(burst, key = lambda p: p.size_bytes, reverse = True)
-        keep = sorted_group[0].path
-        delete = [p.path for p in sorted_group[1:]]
+        ranked = rank_photos(burst)
+        keep = ranked[0].path
+        delete = [p.path for p in ranked[1:]]
 
         result.append({
         "type": "burst_photos",
         "keep": keep,
         "suggest_delete": delete,
-        "count": len(sorted_group)
+        "count": len(ranked)
     })
 
     for p in blurry_photos:
