@@ -7,6 +7,8 @@ from cleaner.similar import find_similar_photos
 from cleaner.burst import find_bursts
 from cleaner.quality import find_blurry_photos
 from cleaner.large import find_large_photos
+from cleaner.dark import find_dark_photos
+from cleaner.screenshots import find_screenshots
 
 def main():
     # Знаходимо дирикторію з фотографіями і робимо її шлях абсолютним
@@ -30,6 +32,8 @@ def main():
     burst_photo_count = sum(len(g) for g in burst_groups)
     blurry_photos = find_blurry_photos(photos)
     large_photos = find_large_photos(photos)
+    dark_photos = find_dark_photos(photos)
+    screenshots = find_screenshots(photos)
 
     # Виводимо результат
     print("\nReady!")
@@ -42,6 +46,8 @@ def main():
         )
     print(f"Blurry photos: {len(blurry_photos)}")
     print(f"Large photos: {len(large_photos)}")
+    print(f"Dark photos: {len(dark_photos)}")
+    print(f"Screenshots / messenger images: {len(screenshots)}")
 
     # Створили список для зберження результатів
     result = []
@@ -100,7 +106,19 @@ def main():
             "path": p.path,
             "size_mb": round(p.size_bytes / (1024 * 1024), 2)
     })
-
+        
+    for p in dark_photos:
+        result.append({
+            "type": "dark_photo",
+            "path":p.path
+        })
+        
+    for p in screenshots:
+        result.append({
+            "type": "screenshots",
+            "path": p.path,
+            "suggest_action": "archive"
+        })
 
     # Зберігаємо результат у JSON-файл в форматі utf-8
     with open("result.json", "w", encoding = "utf-8") as f:
