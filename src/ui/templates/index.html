@@ -6,149 +6,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cleaner Guru – Gallery Cleanup</title>
     <link rel="stylesheet" href="/static/style.css">
+    <srcipt src="../static/script.js" defer>
+        </script>
 </head>
 
 <body>
+
     <header class="top">
         <h1>Cleaner Guru – Gallery Cleanup</h1>
+
         <div class="stats">
             <div><b>Estimated freed:</b> {{ "%.1f"|format(freed_mb) }} MB</div>
             <div><b>Groups:</b> {{ total_groups }}</div>
+        </div>
+
+        <!-- ACTION BAR -->
+        <div id="action-bar">
+            Selected to delete:
+            <strong><span id="selected-count">0</span></strong>
+
+            <button id="select-all-btn">Select all suggested</button>
+            <button id="export-btn" disabled>Export selected (JSON)</button>
         </div>
     </header>
 
     <main class="container">
 
+        {% macro badge(text, cls) %}
+        <span class="badge {{ cls }}">{{ text }}</span>
+        {% endmacro %}
+
+        <!-- EXACT DUPLICATES -->
         <section>
             <h2>Exact Duplicates</h2>
+
             {% for g in grouped["exact_duplicates"] %}
             <div class="card">
+
                 <div class="row">
                     <div class="col">
-                        <div class="label keep">KEEP</div>
+                        <div class="label keep">
+                            KEEP {{ badge("BEST", "best") }}
+                        </div>
                         <img src="/img?path={{ g.keep|urlencode }}" loading="lazy">
+                        <div class="reason">Highest quality & resolution</div>
                     </div>
+
                     <div class="col">
-                        <div class="label del">SUGGEST DELETE ({{ g.count - 1 }})</div>
+                        <div class="label del">
+                            SUGGEST DELETE ({{ g.count - 1 }})
+                        </div>
+
                         <div class="thumbs">
                             {% for p in g.suggest_delete %}
-                            <img src="/img?path={{ p|urlencode }}" loading="lazy">
+                            <div class="thumb bad">
+                                <img src="/img?path={{ p|urlencode }}" loading="lazy">
+
+                                <div class="badge-wrap">
+                                    {{ badge("BAD", "bad") }}
+                                </div>
+
+                                <label class="select">
+                                    <input type="checkbox" class="delete-checkbox" data-path="{{ p }}">
+                                    Select
+                                </label>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
+
             </div>
             {% else %}
             <p class="muted">No groups.</p>
             {% endfor %}
         </section>
 
+        <!-- SIMILAR PHOTOS -->
         <section>
             <h2>Similar Photos</h2>
+
             {% for g in grouped["similar_photos"] %}
             <div class="card">
+
                 <div class="row">
                     <div class="col">
-                        <div class="label keep">KEEP</div>
+                        <div class="label keep">
+                            KEEP {{ badge("BEST", "best") }}
+                        </div>
                         <img src="/img?path={{ g.keep|urlencode }}" loading="lazy">
+                        <div class="reason">Best sharpness & exposure</div>
                     </div>
+
                     <div class="col">
-                        <div class="label del">SUGGEST DELETE ({{ g.count - 1 }})</div>
+                        <div class="label del">
+                            SUGGEST DELETE ({{ g.count - 1 }})
+                        </div>
+
                         <div class="thumbs">
                             {% for p in g.suggest_delete %}
-                            <img src="/img?path={{ p|urlencode }}" loading="lazy">
+                            <div class="thumb ok">
+                                <img src="/img?path={{ p|urlencode }}" loading="lazy">
+
+                                <div class="badge-wrap">
+                                    {{ badge("OK", "ok") }}
+                                </div>
+
+                                <label class="select">
+                                    <input type="checkbox" class="delete-checkbox" data-path="{{ p }}">
+                                    Select
+                                </label>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
+
             </div>
             {% else %}
             <p class="muted">No groups.</p>
             {% endfor %}
         </section>
 
+        <!-- BURST PHOTOS -->
         <section>
             <h2>Burst Photos</h2>
+
             {% for g in grouped["burst_photos"] %}
             <div class="card">
+
                 <div class="row">
                     <div class="col">
-                        <div class="label keep">KEEP</div>
+                        <div class="label keep">
+                            KEEP {{ badge("BEST", "best") }}
+                        </div>
                         <img src="/img?path={{ g.keep|urlencode }}" loading="lazy">
+                        <div class="reason">Best frame in burst</div>
                     </div>
+
                     <div class="col">
-                        <div class="label del">SUGGEST DELETE ({{ g.count - 1 }})</div>
+                        <div class="label del">
+                            SUGGEST DELETE ({{ g.count - 1 }})
+                        </div>
+
                         <div class="thumbs">
                             {% for p in g.suggest_delete %}
-                            <img src="/img?path={{ p|urlencode }}" loading="lazy">
+                            <div class="thumb bad">
+                                <img src="/img?path={{ p|urlencode }}" loading="lazy">
+
+                                <div class="badge-wrap">
+                                    {{ badge("BAD", "bad") }}
+                                </div>
+
+                                <label class="select">
+                                    <input type="checkbox" class="delete-checkbox" data-path="{{ p }}">
+                                    Select
+                                </label>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
+
             </div>
             {% else %}
             <p class="muted">No groups.</p>
             {% endfor %}
-        </section>
-
-        <section class="grid2">
-            <div>
-                <h2>Blurry Photos</h2>
-                <div class="list">
-                    {% for p in grouped["blurry_photo"] %}
-                    <div class="listitem">
-                        <img src="/img?path={{ p.path|urlencode }}" loading="lazy">
-                        <div class="meta">blur: {{ p.blur_score }}</div>
-                    </div>
-                    {% else %}
-                    <p class="muted">None.</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div>
-                <h2>Dark Photos</h2>
-                <div class="list">
-                    {% for p in grouped["dark_photo"] %}
-                    <div class="listitem">
-                        <img src="/img?path={{ p.path|urlencode }}" loading="lazy">
-                        <div class="meta">low brightness</div>
-                    </div>
-                    {% else %}
-                    <p class="muted">None.</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-
-        <section class="grid2">
-            <div>
-                <h2>Large Photos</h2>
-                <div class="list">
-                    {% for p in grouped["large_photo"] %}
-                    <div class="listitem">
-                        <img src="/img?path={{ p.path|urlencode }}" loading="lazy">
-                        <div class="meta">{{ p.size_mb }} MB</div>
-                    </div>
-                    {% else %}
-                    <p class="muted">None.</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div>
-                <h2>Screenshots / Messenger</h2>
-                <div class="list">
-                    {% for p in grouped["screenshots"] %}
-                    <div class="listitem">
-                        <img src="/img?path={{ p.path|urlencode }}" loading="lazy">
-                        <div class="meta">suggest: {{ p.suggest_action }}</div>
-                    </div>
-                    {% else %}
-                    <p class="muted">None.</p>
-                    {% endfor %}
-                </div>
-            </div>
         </section>
 
     </main>
