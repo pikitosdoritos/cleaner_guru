@@ -1,237 +1,197 @@
-# 🧹 Cleaner Guru — Intelligent Gallery Cleanup System
-
-> **Cleaner Guru** is an intelligent system for analyzing, grouping, and optimizing a user’s photo gallery.
-> The goal is to automatically detect redundant, low-quality, and non-essential images and provide **clear, explainable recommendations** for cleanup — without deleting anything automatically.
+Чудово. Нижче — **повноцінний, коректний, інженерний README.md**, оформлений **на рівні Universe Group / Cleaner Guru**, без води, з акцентом на продуктове мислення, алгоритми, UX і масштабованість.
+Можеш **копіювати 1:1** у `README.md`.
 
 ---
 
-## 📌 Problem Statement
+# 🧹 Cleaner Guru — Smart Gallery Cleanup Engine
 
-Modern users store **thousands of photos** on their devices. Over time, galleries become cluttered with:
-
-* Exact duplicates
-* Near-identical photos (bursts, retries)
-* Blurry or dark images
-* Screenshots and messenger images
-* Large files wasting storage
-
-Manual cleanup is time-consuming and error-prone.
-**Cleaner Guru** solves this problem by combining **efficient algorithms, heuristics, and UX-focused decisions** into a single system.
+> **Intelligent photo gallery analysis & cleanup system**
+> Built as a real-world engineering task for **Cleaner Guru / Universe Group**
 
 ---
 
-## 🎯 Project Goals
+## 📌 Overview
 
-* Scan a gallery containing **hundreds or thousands of images**
-* Automatically **group similar and redundant photos**
-* Detect **low-quality images**
-* Provide **clear recommendations** for cleanup
-* Ensure **high performance and explainability**
-* Present results in a **user-friendly interface**
+**Cleaner Guru** is an intelligent photo gallery cleanup system that scans a user’s photo library, detects redundant and low-quality media, and produces **clear, actionable recommendations** on what can be safely removed or archived.
+
+The project is designed not as a simple script, but as a **product-ready backend + UI prototype**, focusing on:
+
+* real-world photo gallery problems
+* performance on large datasets
+* explainable and user-friendly cleanup suggestions
 
 ---
 
-## 🧠 System Overview
+## 🎯 Problem Statement
 
-The system follows a **pipeline architecture**:
+Modern photo galleries quickly become cluttered with:
+
+* exact duplicates
+* nearly identical shots
+* burst photo sequences
+* blurry or dark images
+* screenshots and messenger media
+* oversized photos wasting storage
+
+Manual cleanup is slow, error-prone, and frustrating.
+
+**Cleaner Guru automates this process**, grouping photos by semantic and technical similarity and suggesting the *best possible cleanup actions* — without deleting anything automatically.
+
+---
+
+## 🧠 Core Idea & Philosophy
+
+* **Nothing is deleted automatically**
+* The system only **suggests**, the user decides
+* Each recommendation is **explainable**
+* “KEEP” is always shown clearly
+* Designed to scale from **dozens to thousands of photos**
+
+This mirrors how real production cleanup tools work.
+
+---
+
+## 🧩 System Architecture
 
 ```
-Scan → Enrich → Analyze → Group → Rank → Recommend → Visualize
-```
-
-Each step is isolated, testable, and replaceable.
-
----
-
-## 🏗 Architecture
-
-```
-cleaner_guru/
-├── photos/                # Input gallery
-├── src/
-│   ├── cleaner/
-│   │   ├── scanner.py     # Photo scanning & metadata extraction
-│   │   ├── duplicates.py # Exact duplicate detection
-│   │   ├── similar.py    # Perceptual hash similarity
-│   │   ├── burst.py      # Burst / series detection
-│   │   ├── quality.py    # Blur detection
-│   │   ├── dark.py       # Dark image detection
-│   │   ├── large.py      # Large file detection
-│   │   ├── screenshots.py# Screenshots & messenger images
-│   │   ├── ranking.py    # Photo quality ranking
-│   │   └── models.py     # Unified Photo data model
-│   ├── app.py             # Flask UI
-│   └── main.py            # CLI entry point
-├── result.json            # Structured analysis output
-├── requirements.txt
-└── README.md
+photos/                      → user gallery input
+│
+├── scanner.py               → metadata extraction
+│
+├── analysis modules:
+│   ├── duplicates.py        → exact hash duplicates
+│   ├── similar.py           → perceptual similarity (pHash)
+│   ├── burst.py             → time-based burst detection
+│   ├── quality.py           → blur detection (OpenCV)
+│   ├── dark.py              → low brightness detection
+│   ├── large.py             → oversized images
+│   ├── screenshots.py       → screenshots & messenger media
+│
+├── ranking.py               → best photo selection logic
+│
+├── result.json              → structured cleanup result
+│
+└── ui (Flask):
+    ├── app.py               → web server
+    ├── templates/index.html → UI
+    └── static/              → CSS + JS
 ```
 
 ---
 
-## 📷 Photo Data Model
-
-Each photo is represented by a single unified model:
-
-```python
-Photo(
-    path: str,
-    size_bytes: int,
-    width: int,
-    height: int,
-    sha256: str,
-    phash: str,
-    timestamp: datetime,
-    blur: float
-)
-```
-
-This allows all algorithms to operate on the **same enriched object**, improving consistency and performance.
-
----
-
-## 🔍 Implemented Algorithms
+## 🔍 Implemented Detection & Grouping Algorithms
 
 ### 1️⃣ Exact Duplicates
 
-* **Algorithm:** SHA-256 hashing
-* **Why:** Guarantees 100% accuracy
-* **Result:** Groups of identical files
-
----
+* SHA-256 file hashing
+* 100% identical images grouped together
+* Largest / best-quality image marked as **KEEP**
 
 ### 2️⃣ Similar Photos
 
-* **Algorithm:** Perceptual Hash (pHash)
-* **Metric:** Hamming distance
-* **Use case:** Same scene, small changes (angle, exposure)
+* Perceptual hashing (pHash)
+* Hamming distance threshold
+* Detects visually similar but not identical images
 
----
+### 3️⃣ Burst Photos
 
-### 3️⃣ Burst / Series Detection
-
-* **Algorithm:** Timestamp clustering
-* **Logic:** Photos taken within short time windows
-* **UX goal:** Keep best photo, remove the rest
-
----
+* Timestamp-based clustering
+* Groups rapid sequences (e.g. multiple shots in seconds)
+* Keeps the best-quality frame
 
 ### 4️⃣ Blurry Photos
 
-* **Algorithm:** Variance of Laplacian (OpenCV)
-* **Output:** Numeric blur score
-* **Explainable:** Higher blur → lower quality
-
----
+* OpenCV Laplacian variance
+* Low sharpness = blur candidate
+* Blur score is shown in UI
 
 ### 5️⃣ Dark Photos
 
-* **Algorithm:** Mean brightness threshold
-* **Use case:** Accidental night shots, unusable images
+* Average brightness analysis
+* Flags underexposed images
+
+### 6️⃣ Large Photos
+
+* Detects storage-heavy images
+* Prioritizes cleanup by memory impact
+
+### 7️⃣ Screenshots / Messenger Media
+
+* Filename patterns
+* Resolution heuristics
+* Suggested action: **archive**, not delete
 
 ---
 
-### 6️⃣ Large Files
+## ⭐ Smart Ranking System
 
-* **Metric:** File size (MB)
-* **Goal:** Highlight high storage impact images
+When multiple photos belong to one group, the system ranks them using:
 
----
+* resolution
+* file size
+* sharpness
+* visual quality heuristics
 
-### 7️⃣ Screenshots & Messenger Images
-
-* **Detection:** Filename patterns + aspect ratio heuristics
-* **Suggested action:** Archive instead of delete
-
----
-
-## 🧮 Photo Ranking (Smart Decision Logic)
-
-Instead of choosing photos only by size, **Cleaner Guru ranks photos by quality**:
-
-Factors:
-
-* Resolution
-* File size
-* Blur score
-* Sharpness
-
-This ensures the system **keeps the best possible image** in every group.
+The **best photo is always shown first as KEEP**.
 
 ---
 
-## 📊 Output Format (result.json)
+## 🖥 Web UI (Flask)
 
-The system produces a structured, machine-readable output:
+A lightweight web interface for human-friendly review:
 
-```json
-{
-  "type": "similar_photos",
-  "keep": "...",
-  "suggest_delete": [...],
-  "count": 9
-}
+* Visual grouping
+* Clear KEEP / SUGGEST DELETE separation
+* Lazy-loaded previews
+* Estimated freed storage
+* Group counters
+
+**No frontend frameworks** — simple, readable, and fast.
+
+---
+
+## 🚀 How to Run
+
+### 1️⃣ Create virtual environment
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate   # Windows (Git Bash)
 ```
 
-This format allows:
-
-* UI rendering
-* Future API integration
-* Easy extension (confidence score, labels, ML)
-
----
-
-## 🖥 User Interface (Flask)
-
-A lightweight Flask UI is provided:
-
-* Visual grouping (KEEP vs DELETE)
-* Image previews
-* Estimated freed storage
-* Zero automatic deletion (safe by design)
-
-> UX principle: **The user is always in control**
-
----
-
-## ⚡ Performance Considerations
-
-* Generator-based scanning (low memory usage)
-* Hashing used before pixel-level operations
-* One-pass enrichment
-* Designed to scale to **thousands of photos**
-
----
-
-## 🧪 How to Run
-
-### 1. Install dependencies
+### 2️⃣ Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Put photos into `/photos`
+### 3️⃣ Place photos
 
-```text
+Put test images into:
+
+```
 photos/
- ├── img1.jpg
- ├── img2.jpg
 ```
 
-### 3. Run analysis
+### 4️⃣ Run analysis
 
 ```bash
 python src/main.py
 ```
 
-### 4. Launch UI
+This generates:
+
+```
+result.json
+```
+
+### 5️⃣ Launch UI
 
 ```bash
 python src/ui/app.py
 ```
 
-Open browser at:
+Open in browser:
 
 ```
 http://127.0.0.1:5000
@@ -239,33 +199,31 @@ http://127.0.0.1:5000
 
 ---
 
-## 🚀 Possible Future Improvements
+## ⚡ Performance Considerations
 
-* Confidence score per recommendation
-* ML-based image embeddings (CLIP)
-* Face detection & grouping
-* Mobile integration
-* Real delete / archive actions
-* Cloud-scale processing
+* Streaming photo scanning (generator-based)
+* No full image loading unless required
+* Hashing avoids pixel-level comparisons
+* Designed to handle **thousands of photos**
 
 ---
 
-## 🧠 Engineering Mindset
+## 🧪 Why This Is Production-Ready Thinking
 
-This project was designed not as a script, but as a **scalable product prototype**, focusing on:
+✔ Clear separation of concerns
+✔ Extensible architecture
+✔ No hardcoded UI assumptions
+✔ Human-in-the-loop decision making
+✔ Safe-by-design cleanup suggestions
 
-* Explainability
-* User trust
-* Performance
-* Clean architecture
-* Extensibility
-
----
-
-## ✅ Conclusion
-
-**Cleaner Guru** demonstrates how algorithmic thinking, software engineering practices, and UX considerations can be combined to solve a real-world problem.
-
-This is not just a cleanup tool — it is a **decision support system** for managing personal media efficiently.
+This mirrors how **real mobile cleanup products** are built internally.
 
 ---
+
+## 🔮 Possible Improvements
+
+* ML embeddings for semantic clustering
+* Face detection / people grouping
+* Video support
+* Mobile-native UI
+* User feedback loop for ranking
